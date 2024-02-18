@@ -1,0 +1,29 @@
+[all:vars]
+api_key_id="65c75109756461330198fd31/65c75109756461330198fd35/65c7a2ec756461310110de08"
+api_private_key="/root/intersight_rtp.pem"
+
+configure_iscsi="false"
+
+
+num_profiles=3
+
+
+# From devnet lab
+
+profile_name=UCSX_Domain_profile-01
+org_name=default
+port_policy=port-policy-01
+qos_policy=required-qos
+# Fabric Intersight A and B Serial Numbers
+fia_sn=JAB121800UL
+fib_sn=JAB221800UL
+
+
+
+
+[Intersight_server]
+UCSPE-10-10-20-40-3-1
+UCSPE-10-10-20-40-3-3
+UCSPE-10-10-20-40-3-5
+UCSPE-10-10-20-40-3-7
+UCSPE-10-10-20-40-3-1
