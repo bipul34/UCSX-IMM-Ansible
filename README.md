@@ -15,8 +15,7 @@ Ansible playbooks for Build a Intersight Managed UCSX along with service profile
 References :
 
 https://github.com/ucs-compute-solutions
-                    
-                    https://github.com/CiscoDevNet/intersight-ansible
+https://github.com/CiscoDevNet/intersight-ansible
 
 ------------
 
