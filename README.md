@@ -15,7 +15,7 @@ ____________________________________________________________
 References :
 
 https://github.com/ucs-compute-solutions
-https://github.com/CiscoDevNet/intersight-ansible
+, https://github.com/CiscoDevNet/intersight-ansible
 
 ------------
 
@@ -31,6 +31,7 @@ https://github.com/CiscoDevNet/intersight-ansible
 2. Variable that do not typically require customer input (e.g. descriptions etc.) are present under role_name/defauls/main.yml.
 
 **Playbook Execution Commands**
+-----------------
 Setup domain profile :ansible-playbook ./Create_domain_profile.yml -i inventory  (Precreate port policy and QoS policy)
 
 1. Setup Pools in Intersight: ansible-playbook ./create_pools.yml -i inventory 
@@ -40,6 +41,7 @@ Setup domain profile :ansible-playbook ./Create_domain_profile.yml -i inventory 
 
 
 **Server profiles**
+
 There may be multiple scenarios for deploying server profiles 
 
 1) Derive profiles from template and then deploy 
