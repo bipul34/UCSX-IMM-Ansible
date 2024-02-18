@@ -45,12 +45,16 @@ ansible-playbook Create_domain_profile.yml -i inventory
 There may be multiple scenarios for deploying server profiles 
 
 1) Derive profiles from template and then deploy 
-ansible-playbook ./derive_profile_new.yml -i inventory
+ansible-playbook Derive_UCSX_Service_Profile.yml 
 
-2) derive profiles adn assigned them to indivudual servers
+2) create profiles along with assigneing them to individual servers
    
   Step1 :  run  gather_moid_servers.yml to collect the MOID's in a temp file 
   
-  Step2 : arrange the file in a readable list
+        ansible-playbook gather_moid_servers.yml -i inventory   ## it will collect the MOID of the servers ( I am using devnet lab here ) and create a file /tmp/inventory_server_moid.yml
   
+  Step2 : arrange the file in a readable list
+       Example file uploaded 
+       
   Step3 : run create_server_profiles.yml to create required number of profiles
+    ansible-playbook create_server_profiles.yml -i inventory
