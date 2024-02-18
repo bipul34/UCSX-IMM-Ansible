@@ -23,7 +23,7 @@ Install Intersight Ansible
 
 Prior to installing Intersight Ansible, make sure that you have already installed Ansible on your administration host, then install Intersight Ansible by typing the following:
 
-[root@cephadm ~]# ansible-galaxy collection install cisco.intersight
+[root@###### ~]# ansible-galaxy collection install cisco.intersight
 
 Process install dependency map
 
