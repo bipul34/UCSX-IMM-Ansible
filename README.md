@@ -17,7 +17,39 @@ https://github.com/ucs-compute-solutions
 , https://github.com/CiscoDevNet/intersight-ansible
 
 -----------------
+##Ansible preparation and Intersight API 
 
+Install Intersight Ansible
+
+Prior to installing Intersight Ansible, make sure that you have already installed Ansible on your administration host, then install Intersight Ansible by typing the following:
+
+[root@cephadm ~]# ansible-galaxy collection install cisco.intersight
+
+Process install dependency map
+
+Starting collection install process
+
+Installing 'cisco.intersight:1.0.18' to '/root/.ansible/collections/ansible_collections/cisco/intersight'
+
+To run the Intersight playbooks, add the following variable in the defaults section of /etc/ansible/ansible.cfg:
+
+[defaults]
+
+jinja2_native = True
+
+This option preserves variable types like VLAN numbers during template operations.
+
+Procedure 1.      Generate Intersight API Keys
+
+Note:     To start using the provider the API Key, Secret Key, and Intersight endpoint URL are required.
+
+Step 1.     Log into Cisco Intersight.
+
+Step 2.     Go to Settings, API Keys and click on Generate API Keys.
+
+Step 3.     Enter a description and click Generate
+
+Now Copy this ID and content of the kep to a file mentioned in ansible variable
 
 
 **Setting up Variables All the variables used in this framework are defined in the following locations:**
