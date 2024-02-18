@@ -50,5 +50,7 @@ ansible-playbook ./derive_profile_new.yml -i inventory
 2) derive profiles adn assigned them to indivudual servers
    
   Step1 :  run  gather_moid_servers.yml to collect the MOID's in a temp file 
-  Step2 : arrange the file in a readable list 
+  
+  Step2 : arrange the file in a readable list
+  
   Step3 : run create_server_profiles.yml to create required number of profiles
