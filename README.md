@@ -30,7 +30,7 @@ https://github.com/ucs-compute-solutions
 
 **Playbook Execution Commands**
 -----------------
-Setup domain profile :ansible-playbook ./Create_domain_profile.yml -i inventory  (Precreate port policy and QoS policy). This playbook use some variables from inventory file which can be easily moved to group variable. 
+Setup domain profile : (Pre-create port policy and QoS policy). This playbook use some variables from inventory file which can be easily moved to group variable. 
 
 ansible-playbook Create_domain_profile.yml -i inventory
 
