@@ -32,6 +32,8 @@ https://github.com/ucs-compute-solutions
 -----------------
 Setup domain profile :ansible-playbook ./Create_domain_profile.yml -i inventory  (Precreate port policy and QoS policy). This playbook use some variables from inventory file which can be easily moved to group variable. 
 
+ansible-playbook Create_domain_profile.yml -i inventory
+
 1. Setup Pools in Intersight: ansible-playbook ./create_pools.yml -i inventory 
 2. Setup Policies in Intersight: ansible-playbook ./create_server_policies.yml -i inventory 
 3. Setup Server Profile Template(s) in Intersight: ansible-playbook ./create_server_profile_template.yml -i inventory
