@@ -45,6 +45,7 @@ ansible-playbook Create_domain_profile.yml -i inventory
 There may be multiple scenarios for deploying server profiles 
 
 1) Derive profiles from template and then deploy 
+
 ansible-playbook Derive_UCSX_Service_Profile.yml 
 
 2) create profiles along with assigneing them to individual servers
@@ -57,4 +58,5 @@ ansible-playbook Derive_UCSX_Service_Profile.yml
        Example file uploaded (inventory_server_moid.yml)
        
   Step3 : run create_server_profiles.yml to create required number of profiles
+    
     ansible-playbook create_server_profiles.yml -i inventory
