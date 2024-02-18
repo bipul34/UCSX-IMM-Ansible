@@ -22,7 +22,6 @@ https://github.com/ucs-compute-solutions
 
 
 **Setting up Variables All the variables used in this framework are defined in the following locations:**
-
 -----------------
 
 
