@@ -34,7 +34,7 @@ Setup domain profile : (Pre-create port policy and QoS policy). This playbook us
 
 ansible-playbook Create_domain_profile.yml -i inventory
 
-1. Setup Pools in Intersight: ansible-playbook ./create_pools.yml -i inventory 
+1. Setup Pools in Intersight: ansible-playbook create_UCSX_pools.yml 
 2. Setup Policies in Intersight: ansible-playbook ./create_server_policies.yml -i inventory 
 3. Setup Server Profile Template(s) in Intersight: ansible-playbook ./create_server_profile_template.yml -i inventory
 
