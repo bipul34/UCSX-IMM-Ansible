@@ -1,0 +1,144 @@
+# This is the top-level variable file for customer input regarding options 
+#
+# Setting the following variables to anything but 'true' ('false' is suggested when not using 'true'), will cause the 
+# This needs to setup in this case to have local boot with NVMe-TCP and NFS storage protocols.
+# protocol to not be configured.
+
+ntp_servers:
+  - ip_address: "192.168.1.51"
+  - ip_address: "192.168.1.52"
+  - ip_address: "192.168.1.53"
+
+
+# Update the the following lines to setup DNS Server(s)
+# Note: The Nexus scripts assume exactly 2 DNS servers.
+dns_servers:
+  - ip_address: "192.168.1.51"
+  - ip_address: "192.168.1.52"
+
+# DNS Domain Name
+dns_domain_name: "flexpodb4.cisco.com"
+
+# Update the the following line to setup Timezone
+time_zone: 'America/New_York'
+
+# Comment out any VLANs that are not used here and below(NVMe-TCP)
+#
+native_vlan_name: 'Native-Vlan' # Native VLAN
+native_vlan_id: 1101
+ib_vlan_name: 'IB-MGMT' # IN BAND Management VLAN
+ib_vlan_id: 2229
+#
+# lan_state should be set to 'present' to configure the objects
+# In future, this parameter will be used for deleting the configuration
+#
+lan_state : 'present'
+#
+# VLAN Lists - Comment out or remove any VLANs not being used.
+#
+# The ib_mgmt_vlan_list contains one entry, the IB-MGMT VLAN.
+#
+ib_mgmt_vlan_list:
+  - name: "{{ ib_vlan_name }}"
+    id: "{{ ib_vlan_id }}"
+    native: 'no'
+    state: "{{lan_state}}"
+#
+# The storage_vlan_list contains VLANs that are configured on the storage controllers.
+# These VLANs are also configured in the UCS and in the Nexus switches. This list has
+# two extra fields, storage_protocol, and fabric. Do not remove these extra fields.
+#
+storage_vlan_list:
+  - name: "{{ nfs_vlan_name }}"
+    id: "{{ nfs_vlan_id }}"
+    native: 'no'
+    storage_protocol: NFS
+    state: "{{lan_state}}"
+  - name: "{{ nvme_tcpA_vlan_name }}"
+    id: "{{ nvme_tcpA_vlan_id }}"
+    native: 'no'
+    storage_protocol: NVMe
+    fabric: A
+    state: "{{lan_state}}"
+  - name: "{{ nvme_tcpB_vlan_name }}"
+    id: "{{ nvme_tcpB_vlan_id }}"
+    native: 'no'
+    storage_protocol: NVMe
+    fabric: B
+    state: "{{lan_state}}"
+
+# The remaining_vlan_list contains all vlans that are not configured on storage,
+# but are configured in Nexus and UCS.
+#
+remaining_vlan_list:
+  - name: "{{ native_vlan_name }}"
+    id: "{{ native_vlan_id }}"
+    native: 'yes'
+    state: "{{lan_state}}"
+  - name: "{{ vm_vlan_name }}"
+    id: "{{ vm_vlan_id }}"
+    native: 'no'
+    state: "{{lan_state}}"
+  - name: "{{ vmotion_vlan_name }}"
+    id: "{{ vmotion_vlan_id }}"
+    native: 'no'
+    state: "{{lan_state}}"
+
+# VLANs definitions below will be used to setup trunk ports on Nexus Switches
+# all_vlans_list: for vpc_peer_link and UCS FI trunk ports
+# These VLANs must be same or a subset of the vlan_list abovea
+# Comment out or remove any VLANs that are not used (NVMe-TCP)
+# In future, these values will be auto-generated
+#
+all_vlans_list: "{{ ib_vlan_id }},{{ vm_vlan_id }},{{ nfs_vlan_id }},{{ vmotion_vlan_id }},{{ nvme_tcpA_vlan_id }},{{ nvme_tcpB_vlan_id }}"
+# storage_vlans_list: for storage uplink trunk ports
+storage_vlans_list: "{{ ib_vlan_id }},{{ nfs_vlan_id }},{{ nvme_tcpA_vlan_id }},{{ nvme_tcpB_vlan_id }}"
+# mgmt_vlans_list: for uplink/management switch trunk port
+mgmt_vlans_list: "{{ ib_vlan_id }},{{ vm_vlan_id }}"
+#
+# VLAN/Portgroup List with Pinning info for VMware Distributed Switch vDSO for vMotion and Tenant Data/Storage
+vds0_vlan_list:
+  - name: "{{ nfs_vlan_name }}"
+    # portgroup name will be configured in VMware
+    portgroup_name: "{{ nfs_vlan_name }}-LACP"
+    id: "{{ nfs_vlan_id }}"
+    active_uplinks:
+      - "lag1"
+    standby_uplinks: []
+  - name: "{{ vm_vlan_name }}"
+    # portgroup name will be configured in VMware
+    portgroup_name: "{{ vm_vlan_name }}-LACP"
+    id: "{{ vm_vlan_id }}"
+    active_uplinks: 
+      - "lag1"
+        #- "Uplink 2"
+    standby_uplinks: []
+  - name: "{{ vmotion_vlan_name }}"
+    # portgroup name will be configured in VMware
+    portgroup_name: "{{ vmotion_vlan_name }}-LACP"
+    id: "{{ vmotion_vlan_id }}"
+    active_uplinks: "lag1"
+    standby_uplinks: []
+
+nvme_tcp_vds_vlan_list:
+  - name: "{{ nvme_tcpA_vlan_name }}"
+    # portgroup name will be configured in VMware
+    portgroup_name: "{{ nvme_tcpA_vlan_name }}-LACP"
+    id: "{{ nvme_tcpA_vlan_id }}"
+    active_uplinks:
+      - "lag1"
+    standby_uplinks: []
+  - name: "{{ nvme_tcpB_vlan_name }}"
+    # portgroup name will be configured in VMware
+    portgroup_name: "{{ nvme_tcpB_vlan_name }}-LACP"
+    id: "{{ nvme_tcpB_vlan_id }}"
+    active_uplinks:
+      - "lag1"
+    standby_uplinks: []
+
+nfs_portgroup: "VMKernel-Infra-NFS"
+esxi_nfs_vlan: "{{ nfs_vlan_id }}"
+
+####################################
+configure_iscsi: 'false'
+configure_fc: 'false'
