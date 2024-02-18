@@ -1,0 +1,10 @@
+---
+inventory_list:
+  - name: UCSPE-10-10-20-40-3-5
+    server_moid: 65d0580576752d3701aad7dd
+  - name: UCSPE-10-10-20-40-3-1
+    server_moid: 65d0580676752d3701aad811
+  - name: UCSPE-10-10-20-40-3-7
+    server_moid: 65d0580676752d3701aad7f5
+  - name: UCSPE-10-10-20-40-3-3
+    server_moid: 65d0580576752d3701aad7bd

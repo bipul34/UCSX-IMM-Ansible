@@ -1,0 +1,56 @@
+---
+  - name : playbook
+    hosts: Intersight_server
+    gather_facts: no
+    tasks: 
+      - name: Delete existing variable file
+        file:
+           path: "{{ filepath_server }}"
+           state: absent
+        run_once: true
+        delegate_to: localhost
+        no_log: true
+      - name: Gather Chassis Moid
+        vars:
+          api_info: &api_info
+            api_private_key: "{{ api_private_key }}"
+            api_key_id: "{{ api_key_id }}"
+            api_uri: "{{ api_uri | default(omit) }}"
+            validate_certs: "{{ validate_certs | default(omit) }}"
+            state: "{{ state | default(omit) }}"
+          host_group: Intersight_Chassis
+        block:
+          - intersight_rest_api:
+              <<: *api_info
+              resource_path: /compute/PhysicalSummaries
+              query_params:
+                $filter: "Name eq '{{ inventory_hostname }}'"
+            register: server
+            delegate_to: localhost
+
+          - lineinfile:
+              path: "{{ filepath_server }}"
+              line: "---"
+              state: present
+              create: true
+            delegate_to: localhost
+          - lineinfile:
+              path: "{{ filepath_server }}"
+              line: "inventory_list:"
+              state: present
+              create: true 
+            delegate_to: localhost
+          - lineinfile:
+              path: "{{ filepath_server }}"
+              insertafter: EOF
+              line: "  - name: {{ server.api_response.Name }}"
+              state: present
+              create: true
+            delegate_to: localhost
+          - lineinfile:
+              path: "{{ filepath_server }}"
+              insertafter: EOF
+              line: "    server_moid: {{ server.api_response.Moid }}"
+              state: present
+              create: true 
+            delegate_to: localhost
