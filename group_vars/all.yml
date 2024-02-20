@@ -1,23 +1,19 @@
-# This is the top-level variable file for customer input regarding options 
-#
-# Setting the following variables to anything but 'true' ('false' is suggested when not using 'true'), will cause the 
-# This needs to setup in this case to have local boot with NVMe-TCP and NFS storage protocols.
-# protocol to not be configured.
+
 
 ntp_servers:
-  - ip_address: "192.168.1.51"
-  - ip_address: "192.168.1.52"
-  - ip_address: "192.168.1.53"
+  - ip_address: "192.168.100.51"
+  - ip_address: "192.168.100.52"
+  - ip_address: "192.168.100.53"
 
 
 # Update the the following lines to setup DNS Server(s)
 # Note: The Nexus scripts assume exactly 2 DNS servers.
 dns_servers:
-  - ip_address: "192.168.1.51"
-  - ip_address: "192.168.1.52"
+  - ip_address: "192.168.100.51"
+  - ip_address: "192.168.100.52"
 
 # DNS Domain Name
-dns_domain_name: "flexpodb4.cisco.com"
+dns_domain_name: "flexpodb4.UCXS.com"
 
 # Update the the following line to setup Timezone
 time_zone: 'America/New_York'
@@ -25,9 +21,9 @@ time_zone: 'America/New_York'
 # Comment out any VLANs that are not used here and below(NVMe-TCP)
 #
 native_vlan_name: 'Native-Vlan' # Native VLAN
-native_vlan_id: 1101
+native_vlan_id: 1105
 ib_vlan_name: 'IB-MGMT' # IN BAND Management VLAN
-ib_vlan_id: 2229
+ib_vlan_id: 2230
 #
 # lan_state should be set to 'present' to configure the objects
 # In future, this parameter will be used for deleting the configuration
