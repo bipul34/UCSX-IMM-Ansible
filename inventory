@@ -1,5 +1,5 @@
 [all:vars]
-api_key_id="65c75109756461330198fd31/65c75109756461330198fd35/65c7a2ec756461310110de08"
+api_key_id="*****************************************************"
 api_private_key="/root/intersight_rtp.pem"
 
 configure_iscsi="false"
