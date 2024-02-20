@@ -3,11 +3,11 @@
 # 
 # Enter Intersight API Key ID and the location of the SecretKey file
 # 
-api_key_id        : "65c75109756461330198fd31/65c75109756461330198fd35/65c7a2ec756461310110de08"
+api_key_id        : "********************************"
 api_private_key   : "/root/intersight_rtp.pem"
 # 
 # Prefix added to the pool/policy/profile configuration to eaisly identify items created by Ansible
-prefix        : "Express-G14"
+prefix        : "UCSX"
 
 # Organization Name
 org_name      : "default"
