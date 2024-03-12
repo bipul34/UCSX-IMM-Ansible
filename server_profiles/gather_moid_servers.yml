@@ -1,56 +1,106 @@
 ---
-  - name : playbook
-    hosts: Intersight_server
-    gather_facts: no
-    tasks: 
-      - name: Delete existing variable file
-        file:
-           path: "{{ filepath_server }}"
-           state: absent
-        run_once: true
-        delegate_to: localhost
-        no_log: true
-      - name: Gather Chassis Moid
-        vars:
-          api_info: &api_info
-            api_private_key: "{{ api_private_key }}"
-            api_key_id: "{{ api_key_id }}"
-            api_uri: "{{ api_uri | default(omit) }}"
-            validate_certs: "{{ validate_certs | default(omit) }}"
-            state: "{{ state | default(omit) }}"
-          host_group: Intersight_Chassis
-        block:
-          - intersight_rest_api:
+- name : playbook
+  hosts: Intersight_server
+  gather_facts: no
+  tasks: 
+    - name: Delete existing variable file
+      file:
+          path: "{{ filepath_server }}"
+          state: absent
+      run_once: true
+      delegate_to: localhost
+      no_log: true
+    - name: Gather Chassis Moid
+      vars:
+        api_info: &api_info
+          api_private_key: "{{ api_private_key }}"
+          api_key_id: "{{ api_key_id }}"
+          api_uri: "{{ api_uri | default(omit) }}"
+          validate_certs: "{{ validate_certs | default(omit) }}"
+          state: "{{ state | default(omit) }}"
+        host_group: Intersight_server
+      block:
+        - intersight_rest_api:
               <<: *api_info
               resource_path: /compute/PhysicalSummaries
               query_params:
                 $filter: "Name eq '{{ inventory_hostname }}'"
-            register: server
-            delegate_to: localhost
+          register: server
+          delegate_to: localhost
+        #- name : Print the dict
+        #  debug:
+        #     msg: "{{ server }}"
+          
+        
+        - lineinfile:
+            path: "{{ filepath_server }}"
+            line: "---"
+            state: present
+            create: true
+          
+        - lineinfile:
+            path: "{{ filepath_server }}"
+            insertafter: EOF
+            line: "inventory_list:"
+            state: present
+            create: true 
+          
+        - lineinfile:
+            path: "{{ filepath_server }}"
+            insertafter: EOF
+            line: "  - name: {{ server.api_response.Name }}"
+            state: present
+            create: true
+          
+        - lineinfile:
+            path: "{{ filepath_server }}"
+            insertafter: EOF
+            line: "    server_moid: {{ server.api_response.Moid }}"
+            state: present
+            create: true 
+      delegate_to: localhost
+- hosts: localhost
+  gather_facts: no
+  vars:
+    input_file: "/tmp/inventory_server_moid.yml"
+    output_file: "/tmp/inventory_server_moid.yml"
 
-          - lineinfile:
-              path: "{{ filepath_server }}"
-              line: "---"
-              state: present
-              create: true
-            delegate_to: localhost
-          - lineinfile:
-              path: "{{ filepath_server }}"
-              line: "inventory_list:"
-              state: present
-              create: true 
-            delegate_to: localhost
-          - lineinfile:
-              path: "{{ filepath_server }}"
-              insertafter: EOF
-              line: "  - name: {{ server.api_response.Name }}"
-              state: present
-              create: true
-            delegate_to: localhost
-          - lineinfile:
-              path: "{{ filepath_server }}"
-              insertafter: EOF
-              line: "    server_moid: {{ server.api_response.Moid }}"
-              state: present
-              create: true 
-            delegate_to: localhost
+  tasks:
+    - name: Read input file
+      slurp:
+        src: "{{ input_file }}"
+      register: input_content
+
+    - name: Extract first two lines from input
+      set_fact:
+        first_two_lines: "{{ (input_content['content'] | b64decode).split('\n')[:2] | join('\n') }}"
+
+    - name: Convert input content to YAML format
+      set_fact:
+        output_content: |
+          {{ first_two_lines }}
+          {% set entries = (input_content['content'] | b64decode).split('\n')[2:] %}
+          {% for entry in entries %}
+          {% if "- name:" in entry %}
+          {%   set name = entry.split(':')[1].strip() %}
+          {% elif "server_moid:" in entry %}
+          {%   set server_moid = entry.split(':')[1].strip() %}
+          {%   if name is defined %}
+            - name: {{ name }}
+              server_moid: {{ server_moid }}
+          {%   endif %}
+          {% endif %}
+          {% endfor %}
+
+    - name: Write output content to file
+      copy:
+        content: "{{ output_content }}"
+        dest: "{{ output_file }}"
+
+    - name: Show output content
+      debug:
+        msg: "{{ output_content }}"
+
+    
+  
+
