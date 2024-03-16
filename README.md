@@ -57,7 +57,7 @@ Now Copy this ID and content of the kep to a file mentioned in ansible variable
 
 
 
-1. Variable that require customer inputs are part of group_vars/ 
+1. Variable that require customer inputs are part of group_vars/. Update API key on inventory and ucs.yml (two location) 
 2. Variable that do not typically require customer input (e.g. descriptions etc.) are present under role_name/defauls/main.yml.
 
 **Playbook Execution Commands**
