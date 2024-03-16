@@ -6,7 +6,7 @@ configure_iscsi="false"
 
 
 num_profiles=3
-
+filepath_server="/tmp/inventory_server_moid.yml"
 
 # From devnet lab
 
