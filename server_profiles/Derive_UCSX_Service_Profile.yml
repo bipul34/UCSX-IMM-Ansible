@@ -1,0 +1,65 @@
+---
+#
+- name : Playbook to derive Server profiles
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - group_vars/ucs.yml
+  tasks:
+    - name: "GET MSID of {{ template_name }}"
+      intersight_rest_api:
+        api_private_key: "{{ api_private_key | default(omit) }}"
+        api_key_id: "{{ api_key_id | default(omit) }}"
+        api_uri: "{{ api_uri | default(omit) }}"
+        validate_certs: "{{ validate_certs | default(omit) }}"
+        state: "{{ state | default(omit) }}"
+        resource_path: /server/ProfileTemplates
+        query_params:
+          $filter: "Name eq '{{ template_name }}'"
+
+      register:  template_resp
+
+    - name: "derive MOID of Org "
+      intersight_rest_api:
+        api_private_key: "{{ api_private_key | default(omit) }}"
+        api_key_id: "{{ api_key_id | default(omit) }}"
+        api_uri: "{{ api_uri | default(omit) }}"
+        validate_certs: "{{ validate_certs | default(omit) }}"
+        state: "{{ state | default(omit) }}"
+        resource_path: /organization/Organizations
+        query_params:
+          $filter: "Name eq '{{ org_name }}'"
+
+      register:  org_resp
+
+# Get the Organization Moid
+    # Derive profiles from template (if profiles don't already exist)
+    - name: " POST to derive {{ num_profiles }} profiles from {{ template_name }} "
+      intersight_rest_api:
+        api_private_key: "{{ api_private_key | default(omit) }}"
+        api_key_id: "{{ api_key_id | default(omit) }}"
+        api_uri: "{{ api_uri | default(omit) }}"
+        validate_certs: "{{ validate_certs | default(omit) }}"
+        state: "{{ state | default(omit) }}"
+        resource_path: /bulk/MoCloners
+        update_method: post
+        api_body: {
+          "Sources": [
+            {
+              "ClassId": "mo.MoRef",
+              "ObjectType": "server.ProfileTemplate",
+              "Moid": "{{ template_resp.api_response.Moid }}"
+            }
+          ],
+          "Targets": [
+            {
+              "Name": "{{ template_name }}_DERIVED-{{ item }}",
+              "ObjectType": "server.Profile",
+              "Organization": {
+                "Moid": "{{ org_resp.api_response.Moid }}"
+              },
+              "ClassId": "server.Profile"
+            }
+          ]
+        } 
+      loop: "{{ range(1, num_profiles + 1) | list }}"
